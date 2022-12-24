@@ -53,23 +53,23 @@ export default function Home({ weatherInfo, city }: { weatherInfo: WeatherInfo, 
 export async function getServerSideProps() {
   const ipRequest = await fetch('http://ip-api.com/json');
   const ipData = await ipRequest.json();
-  const city = ipData.regionName;
-  const lat = ipData.lat;
-  const lon = ipData.lon;
+  const city: string = ipData.regionName;
+  const lat: string = ipData.lat;
+  const lon: string = ipData.lon;
   
-  const api_key = process.env.OPEN_WEATHER_API_KEY;
-  const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${api_key}`;
+  const api_key: string | undefined = process.env.OPEN_WEATHER_API_KEY;
+  const url: string = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${api_key}`;
   const weatherRequest = await fetch(url);
   const weatherInfo = await weatherRequest.json();
-  
+
   return { props: { weatherInfo, city } };
 }
 
 export function getToday(): string {
-  let todayObj = new Date();
-  let dd = String(todayObj.getDate()).padStart(2, '0');
-  let mm = String(todayObj.getMonth() + 1).padStart(2, '0'); //January is 0!
-  let yyyy = todayObj.getFullYear();
+  let todayObj: Date = new Date();
+  let dd: string = String(todayObj.getDate()).padStart(2, '0');
+  let mm: string = String(todayObj.getMonth() + 1).padStart(2, '0'); //January is 0!
+  let yyyy: number = todayObj.getFullYear();
 
   return dd + '/' + mm + '/' + yyyy;
 }
