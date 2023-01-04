@@ -4,7 +4,12 @@ export interface WeatherInfo {
   main: {
     temp: number;
   };
-  weather: [{ description: string }];
+  weather: [
+    { 
+      description: string, 
+      icon: string, 
+    }
+  ];
 }
 
 export default function Home({ weatherInfo, city }: { weatherInfo: WeatherInfo, city: string }) {
@@ -24,14 +29,14 @@ export default function Home({ weatherInfo, city }: { weatherInfo: WeatherInfo, 
           <div className="d-flex justify-content-between align-items-center mt-4">
             <div className="pe-5">
               <h2 className="d-inline">
-                {Math.round(weatherInfo.main.temp)}
+                {weatherInfo.main.temp}
               </h2>
-              <sup>°C</sup>
+              <sup>°</sup>
               <p className="text-info text-capitalize">
                 {weatherInfo.weather[0].description}
               </p>
             </div>
-            <div><img src='/1.png' alt="" width={100} draggable="false" /></div>
+            <div><img src={`http://openweathermap.org/img/wn/${weatherInfo.weather[0].icon}@2x.png`} alt="" width={100} draggable="false" /></div>
           </div>
           <hr />
           <div className="d-md-flex justify-content-between align-items-center mt-4">
@@ -53,7 +58,7 @@ export default function Home({ weatherInfo, city }: { weatherInfo: WeatherInfo, 
 export async function getServerSideProps() {
   const ipRequest = await fetch('http://ip-api.com/json');
   const ipData = await ipRequest.json();
-  const city: string = ipData.regionName;
+  const city: string = ipData.city + ', ' + ipData.region;
   const lat: string = ipData.lat;
   const lon: string = ipData.lon;
   
