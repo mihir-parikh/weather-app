@@ -5,14 +5,35 @@ export interface WeatherInfo {
     temp: number;
   };
   weather: [
-    { 
-      description: string, 
-      icon: string, 
+    {
+      description: string,
+      icon: string,
     }
   ];
 }
 
 export default function Home({ weatherInfo, city }: { weatherInfo: WeatherInfo, city: string }) {
+  const saveWeather = () => {
+    const date = new Date();
+
+    let data = {
+      date: `${date.getDate()} ${date.getMonth() + 1} ${date.getFullYear()}`,
+      time: date.toLocaleTimeString(),
+      city: city,
+      temperature: weatherInfo.main.temp,
+      description: weatherInfo.weather[0].description
+    };
+
+    let previousData = [];
+    let previousDataStr: string | null = localStorage.getItem("weatherHistory");
+    if (previousDataStr !== null) {
+      previousData = JSON.parse(previousDataStr);
+    }
+    previousData.push(data);
+    localStorage.setItem("weatherHistory", JSON.stringify(previousData));
+    alert('Weather saved successfully!');
+  }
+
   return (
     <div>
       <div
@@ -40,7 +61,7 @@ export default function Home({ weatherInfo, city }: { weatherInfo: WeatherInfo, 
           </div>
           <hr />
           <div className="d-md-flex justify-content-between align-items-center mt-4">
-            <button className="btn btn-success border-0 save-btn px-4 py-3">
+            <button className="btn btn-success border-0 save-btn px-4 py-3" onClick={saveWeather}>
               Timestamp
             </button>
             <Link href="/history">
@@ -61,7 +82,7 @@ export async function getServerSideProps() {
   const city: string = ipData.city + ', ' + ipData.region;
   const lat: string = ipData.lat;
   const lon: string = ipData.lon;
-  
+
   const api_key: string | undefined = process.env.OPEN_WEATHER_API_KEY;
   const url: string = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${api_key}`;
   const weatherRequest = await fetch(url);
