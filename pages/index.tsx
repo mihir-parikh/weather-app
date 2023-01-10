@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+//  Type for data coming from the external API
 export interface WeatherInfo {
   main: {
     temp: number;
@@ -12,12 +13,21 @@ export interface WeatherInfo {
   ];
 }
 
+//  Type for the internal Weather History data
+export interface WeatherHistoryData {
+  date: string,
+  time: string,
+  city: string,
+  temperature: number,
+  description: string
+}
+
 export default function Home({ weatherInfo, city }: { weatherInfo: WeatherInfo, city: string }) {
   const saveWeather = () => {
     const date = new Date();
 
-    let data = {
-      date: `${date.getDate()} ${date.getMonth() + 1} ${date.getFullYear()}`,
+    let data: WeatherHistoryData = {
+      date: `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`,
       time: date.toLocaleTimeString(),
       city: city,
       temperature: weatherInfo.main.temp,
